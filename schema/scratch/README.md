@@ -1,14 +1,17 @@
 ## To run
 
 generate json schema: `gen-json-schema scratch.yaml`
+
 validate: `linkml-validate -s scratch.yaml data.yaml`
+
 convert to rdf (ttl): `linkml-convert -s scratch.yaml data.yaml -o data.ttl`
 
 Expand dynamic enums (via oaklib): 
     `vskit expand -s schema/scratch/scratch.yaml -o scratch_expanded.yaml` # currently failing
 
-# Notes:
+## Notes:
 
+### progress
 The schema in sratch.yaml replicates the basic functionality needed to reproduce cas json schema.
 
 It also goes some way to producing RDF following the standard annotation schema developed elsewhere
@@ -18,7 +21,7 @@ It also goes some way to producing RDF following the standard annotation schema 
   - linking to CL term (although see below)
   - dynamic enum spec example (although see below)
 
-Progress but still needs work:
+### Still needs work:
   - CL term is not treated as an OWL entity (value type of axiom is string)
   - dynamic enums specifying a CL term in the CL slot.  RDF conversion fails when this is in place, although oddly not  validation. This needs reporting
   - not creating individuals for labelset (no idea why when the same pattern is being used as for annotations)
@@ -29,15 +32,15 @@ Progress but still needs work:
 
 ## To explore
 
-Project generation: https://linkml.io/linkml/generators/project-generator.html
-Note - the last we tried this, the doc was disappointing.  Some scope for contributing to improve.
+- Project generation: https://linkml.io/linkml/generators/project-generator.html
+   - Note - the last we tried this, the doc was disappointing.  Some scope for contributing to improve.
 
-Mixins & inheritance - can we use these to compose CAP and BICAN releases.
+- Mixins & inheritance - can we use these to compose CAP and BICAN releases.
 
 ## To complete
 
-The whole schema could potentially be pulled across by using 
+- The whole schema could potentially be pulled across by using 
 [schema-automator](https://linkml.io/schema-automator/packages/importers.html#importing-from-json-schema) but so far, 
-failing to install.  In absence of this, could be done manually.
+failing to install.  In the absence of this solution, it could be added manually.
 
-Some simple OWL infrastructure & ROBOT pipelines could pull minimal imports (APs, declarations)
+- Some simple OWL infrastructure & ROBOT pipelines could pull minimal imports (APs, declarations)
