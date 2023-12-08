@@ -12,7 +12,7 @@ Expand dynamic enums (via oaklib):
 ## Notes:
 
 ### progress
-The schema in sratch.yaml replicates the basic functionality needed to reproduce cas json schema.
+The schema in scratch.yaml replicates the basic functionality needed to reproduce cas json schema.
 
 It also goes some way to producing RDF following the standard annotation schema developed elsewhere
 (pandasaurus_cxg, VFB, BDSO/PCL):
