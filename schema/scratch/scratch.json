@@ -1,0 +1,94 @@
+{
+    "$defs": {
+        "Annotation": {
+            "additionalProperties": false,
+            "description": "",
+            "properties": {
+                "accession": {
+                    "type": "string"
+                },
+                "cell_label": {
+                    "type": "string"
+                },
+                "cell_type": {
+                    "type": "string"
+                },
+                "labelset": {
+                    "type": "string"
+                },
+                "parent_accession": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "accession"
+            ],
+            "title": "Annotation",
+            "type": "object"
+        },
+        "CellTypeEnum": {
+            "description": "",
+            "title": "CellTypeEnum",
+            "type": "string"
+        },
+        "Container": {
+            "additionalProperties": false,
+            "description": "",
+            "properties": {
+                "annotations": {
+                    "items": {
+                        "$ref": "#/$defs/Annotation"
+                    },
+                    "type": "array"
+                },
+                "labelsets": {
+                    "items": {
+                        "$ref": "#/$defs/Labelset"
+                    },
+                    "type": "array"
+                }
+            },
+            "title": "Container",
+            "type": "object"
+        },
+        "Labelset": {
+            "additionalProperties": false,
+            "description": "",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "id"
+            ],
+            "title": "Labelset",
+            "type": "object"
+        }
+    },
+    "$id": "https://fu.bar/cas",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "additionalProperties": true,
+    "description": "",
+    "metamodel_version": "1.7.0",
+    "properties": {
+        "annotations": {
+            "items": {
+                "$ref": "#/$defs/Annotation"
+            },
+            "type": "array"
+        },
+        "labelsets": {
+            "items": {
+                "$ref": "#/$defs/Labelset"
+            },
+            "type": "array"
+        }
+    },
+    "title": "cas",
+    "type": "object",
+    "version": null
+}

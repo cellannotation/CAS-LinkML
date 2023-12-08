@@ -1,0 +1,25 @@
+@prefix PCL: <http://purl.obolibrary.org/obo/PCL_> .
+@prefix RO: <http://purl.obolibrary.org/obo/RO_> .
+@prefix cas: <http://cellannotation_schema.org/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix taxonomy: <http://purl.brain-bican.org/taxonomy/> .
+
+taxonomy:CCN201912131_2 a PCL:0010001 ;
+    rdfs:label "D1-MSN" ;
+    cas:has_labelset "cas:Subclass" ;
+    RO:0002473 "CL:4023026" ;
+    RO:0015003 taxonomy:CCN201912131_1 .
+
+taxonomy:CCN201912131_1 a PCL:0010001 ;
+    rdfs:label "MSN" ;
+    cas:has_labelset "cas:Class" ;
+    RO:0002473 "CL:1001474" .
+
+[] a cas:Container ;
+    cas:annotations taxonomy:CCN201912131_1,
+        taxonomy:CCN201912131_2 ;
+    cas:labelsets [ a cas:Labelset ;
+            cas:id "cas:Claz" ],
+        [ a cas:Labelset ;
+            cas:id "cas:Subclass" ] .
+

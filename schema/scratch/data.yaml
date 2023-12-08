@@ -1,0 +1,17 @@
+labelsets:
+      [
+        { id: cas:Class },  # can't seem to get these to pass when id set to identifier: True
+        { id: cas:Subclass }
+      ]
+annotations:
+  [ { accession: taxonomy:CCN201912131_1,
+      labelset: cas:Class,
+      cell_label: MSN,
+      cell_type: CL:1001474,
+  },
+    { accession: taxonomy:CCN201912131_2,
+      cell_label: D1-MSN,
+      labelset: cas:Subclass,
+      cell_type: CL:4023026,
+      parent_accession: taxonomy:CCN201912131_1 } ]
+

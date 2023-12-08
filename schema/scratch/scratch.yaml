@@ -1,0 +1,72 @@
+id: https://fu.bar/cas
+name: cas
+prefixes:
+  linkml: https://w3id.org/linkml/
+  cas: http://cellannotation_schema.org/  # invented URL for this
+  ORCID: https://orcid.org/
+  RO: http://purl.obolibrary.org/obo/RO_
+  CL: http://purl.obolibrary.org/obo/CL_
+  obo: http://purl.obolibrary.org/obo/
+  PCL: http://purl.obolibrary.org/obo/PCL_
+  taxonomy: http://purl.brain-bican.org/taxonomy/
+  rdfs: http://www.w3.org/2000/01/rdf-schema#
+
+imports:
+  - linkml:types
+default_range: string
+default_prefix: cas
+
+enums:
+  CellTypeEnum:
+    reachable_from:
+      source_ontology: obo:cl
+      source_nodes:
+        - CL:0000000 ## cell
+      include_self: true
+      relationship_types:
+        - rdfs:subClassOf
+
+classes:
+  Container:
+    tree_root: true
+    attributes:
+      annotations:
+        multivalued: true
+        inlined_as_list: true
+        range: Annotation
+      labelsets:
+        multivalued: true
+        inlined_as_list: true
+        range: Labelset
+
+  Labelset:
+#   class_uri: cas:Labelset
+    attributes:
+      id:
+        identifier: true  # failed ttl build when this is true.  Not sure why when works for Annotation.accession
+      description:
+
+  Annotation:
+    class_uri: PCL:0010001
+    attributes:
+      accession:
+        identifier: true
+      cell_label:
+        slot_uri: rdfs:label
+        range:
+      cell_type:
+        slot_uri: RO:0002473
+        # range: CellTypeEnum # this fails ttl gen with `ValueError: Unknown CellTypeEnum enumeration code: CL:1001474`
+                              # suspect Might be fixed by expansion (with oaklib), which is failing
+                              # - see https://linkml.io/linkml/schemas/enums.html#dynamic-enums
+      parent_accession:
+        slot_uri: RO:0015003
+        range: Annotation
+      labelset:
+        slot_uri: cas:has_labelset
+#       range: Labelset # Can't set if label Identifier doesn't work
+
+
+
+
+
