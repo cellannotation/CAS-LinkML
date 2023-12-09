@@ -31,13 +31,13 @@ TBD: cluster --> labelset - should this use internal CAS IRIs?
 
 *Inputs:*
 
-schema/scratch/scratch.yaml # Exptl schema
-schema/scratch/data.yaml # test data file
+- `schema/scratch/scratch.yaml` # Exptl schema
+- `schema/scratch/data.yaml` # test data file
     
 *Outputs:*
 
-schema/scratch/data.ttl # ttl file generated from data 
-schema/scratch/scratch.json # JSON schema output
+- `schema/scratch/data.ttl` # ttl file generated from data 
+- `schema/scratch/scratch.json` # JSON schema output
 
 
 ## To run
