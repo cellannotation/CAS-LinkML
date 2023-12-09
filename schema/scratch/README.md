@@ -1,3 +1,30 @@
+## Aims
+
+Generate a LinkML version of the [Cell Annotation Schema](https://github.com/cellannotation/cell-annotation-schema) that can be used to:
+
+(a) enhance validation with dynamic enumns (e.g. for CL) and internal reference checks (e.g. for ) 
+(b) generate OWL/RDF from data to drive knowldge graphs (the RDF is also potentially useful in [cas-Tools](https://github.com/cellannotation/cas-tools) - e.g. for calculating cell_id closure.)
+(c) generate python data classes for use in [cas-Tools](https://github.com/cellannotation/cas-tools)
+
+Current approach is to incrementally build and test desired functionaly with a scratch version of the schema.
+Once major issues are solved we can move to a more complete representation and start using generators for doc, JSON-schema, python Dataclasses etc. 
+At this point we should also automate tests against CAS compliant 
+
+Because the need for an OWL/RDF representation is most critical for BICAN, initial work is concentrating on modelling the BICAN extended version of cas ([snapshot release](https://github.com/cellannotation/cell-annotation-schema))/
+
+## Files
+
+*Inputs:*
+
+schema/scratch/scratch.yaml # Exptl schema
+schema/scratch/data.yaml # test data file
+    
+*Outputs:*
+
+schema/scratch/data.ttl # ttl file generated from data 
+schema/scratch/scratch.json # JSON schema output
+
+
 ## To run
 
 generate json schema: `gen-json-schema scratch.yaml`
