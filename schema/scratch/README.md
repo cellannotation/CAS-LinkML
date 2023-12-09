@@ -2,15 +2,30 @@
 
 Generate a LinkML version of the [Cell Annotation Schema](https://github.com/cellannotation/cell-annotation-schema) that can be used to:
 
-(a) enhance validation with dynamic enumns (e.g. for CL) and internal reference checks (e.g. for ) 
+(a) enhance validation with dynamic enumns (e.g. for CL) and internal reference checks (e.g. for CL).
+  - longer term aim - build a better infrastructure for Link-ML dynamic enums using UberGraph (complete graph of OBO ontologies) & OBASK autosuggest endpoints.
+
 (b) generate OWL/RDF from data to drive knowldge graphs (the RDF is also potentially useful in [cas-Tools](https://github.com/cellannotation/cas-tools) - e.g. for calculating cell_id closure.)
+
 (c) generate python data classes for use in [cas-Tools](https://github.com/cellannotation/cas-tools)
 
 Current approach is to incrementally build and test desired functionaly with a scratch version of the schema.
 Once major issues are solved we can move to a more complete representation and start using generators for doc, JSON-schema, python Dataclasses etc. 
-At this point we should also automate tests against CAS compliant 
+At this point we should also automate tests against CAS compliant.
 
-Because the need for an OWL/RDF representation is most critical for BICAN, initial work is concentrating on modelling the BICAN extended version of cas ([snapshot release](https://github.com/cellannotation/cell-annotation-schema))/
+Because the need for an OWL/RDF representation is most critical for BICAN, initial work is concentrating on modelling the BICAN extended version of cas ([snapshot release](https://github.com/cellannotation/cell-annotation-schema/releases/tag/untagged-1fcd76c4bd60071caa66)).
+
+Longer term vision - can we use
+
+## RDF schema sketch (based on prior work in pandasaurus_cxg, VFB, BDSO/PCL)
+
+- Annotation objects are instances of 'cluster' (PCL:0010001)  # could be improved.
+- Clusters that form a simple nested hierarchy are related by subcluster_of ([RO:0015003](https://www.ebi.ac.uk/ols4/ontologies/ro/properties/http%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FRO_0015003))
+- Clusters are typed with a Cell Type term using an existential resriction on `composed primarily of` ([RO:0002473](https://www.ebi.ac.uk/ols4/ontologies/ro/properties/http%253A%252F%252Fpurl.obolibrary.org%252Fobo%252FRO_0002473))
+- cell_label --> rdfs:label
+proposal: annotation.cell_fullname --> skos:preflabel?
+
+TBD: cluster --> labelset - should this use internal CAS IRIs?
 
 ## Files
 
