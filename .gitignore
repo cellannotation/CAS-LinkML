@@ -2,3 +2,5 @@ venv
 venv2
 .idea
 .DS_store
+/.DS_store
+schema/.DS_Store

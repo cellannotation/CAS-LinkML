@@ -43,7 +43,7 @@ classes:
 #   class_uri: cas:Labelset
     attributes:
       id:
-        identifier: true  # failed ttl build when this is true.  Not sure why when works for Annotation.accession
+#        identifier: true  # failed ttl build when this is true.  Not sure why when works for Annotation.accession
       description:
 
   Annotation:
@@ -56,7 +56,7 @@ classes:
         range:
       cell_type:
         slot_uri: RO:0002473
-        # range: CellTypeEnum # this fails ttl gen with `ValueError: Unknown CellTypeEnum enumeration code: CL:1001474`
+        range: CellTypeEnum # this fails ttl gen with `ValueError: Unknown CellTypeEnum enumeration code: CL:1001474`
                               # suspect Might be fixed by expansion (with oaklib), which is failing
                               # - see https://linkml.io/linkml/schemas/enums.html#dynamic-enums
       parent_accession:
