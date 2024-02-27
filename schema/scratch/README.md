@@ -9,16 +9,16 @@ Expand dynamic enums (via oaklib):
 
 # Notes:
 
-The schema in sratch.yaml replicates the basic functionality needed to reproduce cas json schema.
+The schema in scratch.yaml replicates the basic functionality needed to reproduce cas json schema.
 
 It also goes some way to producing RDF following the standard annotation schema developed elsewhere
 (pandasaurus_cxg, VFB, BDSO/PCL):
-  - annotations are represented as individuals typed as clusters and are related in a hierarchy vis subClusterOf
+  - annotations are represented as individuals typed as clusters and are related in a hierarchy via subClusterOf
   - the correct predicate is specified for linking to Cell Type (CL term)
   - Dynamic enum & CL term linking works as a simple triple (requires expansion first or rdf gen fails)
 
 Progress but still needs work:
-  - not creating individuals for labelset (no idea why when the same pattern is being used as for annotations)
+  - not creating individuals for labelset (I have no idea why when the same pattern is being used as for annotations)
   - OWL typing of object properties (should be able to generate these from imports, so outside of LinkML)
   - Strictly Cluster --> CL term should be an existential restriction.  
     - Is there some way to fix this with LinkML OWL?
