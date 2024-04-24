@@ -1,2 +1,5 @@
 linkml
 oaklib
+schema-automator
+defusedxml
+linkml-owl
