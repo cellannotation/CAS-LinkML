@@ -1,0 +1,387 @@
+name: General_Cell_Annotation_Open_Standard
+id: https://purl.brain-bican.org/ontology/AIT_MTG
+imports:
+- linkml:types
+prefixes:
+  General_Cell_Annotation_Open_Standard: https://purl.brain-bican.org/ontology/
+  CAS: https://purl.brain-bican.org/ontology/
+  MTG: https://purl.brain-bican.org/ontology/AIT_MTG#
+  linkml: https://w3id.org/linkml/
+  CellXGene_dataset: https://purl.brain-bican.org/ontology/CellXGene-dataset/
+  CrossArea_cluster: https://purl.brain-bican.org/ontology/AIT_MTG#CrossArea_cluster_
+  CrossArea_subclass: https://purl.brain-bican.org/ontology/AIT_MTG#CrossArea_subclass_
+  Class: https://purl.brain-bican.org/ontology/AIT_MTG#Class_
+default_prefix: General_Cell_Annotation_Open_Standard
+
+default_curi_maps:
+- semweb_context
+- obo_context
+
+#types:
+#  string:
+#    base: str
+#    uri: xsd:string
+
+enums:
+  annotation_method_options:
+    permissible_values:
+      algorithmic: {}
+      manual: {}
+      both: {}
+slots:
+  id:
+    identifier: true
+    range: uriorcurie
+  name:
+    description: name of annotation key
+    required: true
+    range: string
+    slot_uri: rdfs:label
+#    identifier: true
+    annotations:
+      owl: AnnotationProperty, AnnotationAssertion
+  description:
+    description: Some text describing what types of cell annotation this annotation
+      key is used to record
+    range: string
+    slot_uri: IAO:0000115
+    annotations:
+      owl: AnnotationProperty, AnnotationAssertion
+  annotation_method:
+    description: 'The method used for creating the cell annotations. This MUST be
+      one of the following strings: `''algorithmic''`, `''manual''`, or `''both''`'
+    range: annotation_method_options
+  automated_annotation:
+    range: AutomatedAnnotation
+  rank:
+    description: A number indicating relative granularity with 0 being the most specific.  Use
+      this where a single dataset has multiple keys that are used consistently to
+      record annotations and different levels of granularity.
+    range: integer
+    annotations:
+      owl: AnnotationAssertion
+  algorithm_name:
+    description: ''
+    range: string
+    annotations:
+      owl: AnnotationAssertion
+  algorithm_version:
+    description: The version of the algorithm used (if applicable). It MUST be a string
+      of the algorithm's version, which is typically in the format '[MAJOR].[MINOR]',
+      but other versioning systems are permitted (based on the algorithm's versioning).
+    required: true
+    range: string
+    annotations:
+      owl: AnnotationAssertion
+  algorithm_repo_url:
+    description: This field denotes the URL of the version control repository associated
+      with the algorithm used (if applicable). It MUST be a string of a valid URL.
+    required: true
+    range: string
+    annotations:
+      owl: AnnotationAssertion
+  reference_location:
+    description: "This field denotes a valid URL of the annotated dataset that was\
+      \ the source of annotated reference data. \nThis MUST be a string of a valid\
+      \ URL. The concept of a 'reference' specifically refers to 'annotation transfer'\
+      \ algorithms, whereby a 'reference' dataset is used to transfer cell annotations\
+      \ to the 'query' dataset."
+    range: string
+    annotations:
+      owl: AnnotationAssertion
+  labelset:
+    description: "The unique name of the set of cell annotations. \nEach cell within\
+      \ the AnnData/Seurat file MUST be associated with a 'cell_label' value in order\
+      \ for this to be a valid 'cellannotation_setname'."
+    range: string
+    required: true
+    annotations:
+      owl: AnnotationAssertion
+  cell_label:
+    description: "This denotes any free-text term which the author uses to annotate\
+      \ cells, i.e. the preferred cell label name used by the author. Abbreviations\
+      \ are exceptable in this field; refer to 'cell_fullname' for related details.\
+      \ \nCertain key words have been reserved:\n- `'doublets'` is reserved for encoding\
+      \ cells defined as doublets based on some computational analysis\n- `'junk'`\
+      \ is reserved for encoding cells that failed sequencing for some reason, e.g.\
+      \ few genes detected, high fraction of mitochondrial reads\n- `'unknown'` is\
+      \ explicitly reserved for unknown or 'author does not know'\n- `'NA'` is incomplete,\
+      \ i.e. no cell annotation was provided"
+    range: string
+    required: true
+    annotations:
+      owl: AnnotationAssertion
+  cell_fullname:
+    description: "This MUST be the full-length name for the biological entity listed\
+      \ in `cell_label` by the author. (If the value in `cell_label` is the full-length\
+      \ term, this field will contain the same value.) \nNOTE: any reserved word used\
+      \ in the field 'cell_label' MUST match the value of this field. \n\nEXAMPLE\
+      \ 1: Given the matching terms 'LC' and 'luminal cell' used to annotate the same\
+      \ cell(s), then users could use either terms as values in the field 'cell_label'.\
+      \ However, the abbreviation 'LC' CANNOT be provided in the field 'cell_fullname'.\
+      \ \n\nEXAMPLE 2: Either the abbreviation 'AC' or the full-length term intended\
+      \ by the author 'GABAergic amacrine cell' MAY be placed in the field 'cell_label',\
+      \ but as full-length term naming this biological entity, 'GABAergic amacrine\
+      \ cell' MUST be placed in the field 'cell_fullname'."
+    range: string
+    annotations:
+      owl: AnnotationAssertion
+  cell_ontology_term_id:
+    description: 'This MUST be a term from either the Cell Ontology (https://www.ebi.ac.uk/ols/ontologies/cl)
+      or from some ontology that extends it by classifying cell types under terms
+      from the Cell Ontology
+
+      e.g. the Provisional Cell Ontology (https://www.ebi.ac.uk/ols/ontologies/pcl)
+      or the Drosophila Anatomy Ontology (DAO) (https://www.ebi.ac.uk/ols4/ontologies/fbbt).
+
+
+      NOTE: The closest available ontology term matching the value within the field
+      ''cell_label'' (at the time of publication) MUST be used.
+
+      For example, if the value of ''cell_label'' is ''relay interneuron'', but this
+      entity does not yet exist in the ontology, users must choose the closest available
+      term in the CL ontology. In this case, it''s the broader term ''interneuron''
+      i.e.  https://www.ebi.ac.uk/ols/ontologies/cl/terms?obo_id=CL:0000099.'
+#    range: string
+#    range: NamedThing
+    annotations:
+      owl: AnnotationAssertion
+  cell_ontology_term:
+    description: This MUST be the human-readable name assigned to the value of 'cell_ontology_term_id'
+    range: string
+    annotations:
+      owl: AnnotationAssertion
+  cell_ids:
+    description: Cell barcode sequences/UUIDs used to uniquely identify the cells
+      within the AnnData/Seurat matrix. Any and all cell barcode sequences/UUIDs MUST
+      be included in the AnnData/Seurat matrix.
+    multivalued: true
+    slot_uri: CAS:hasCellID
+    annotations:
+      owl: AnnotationAssertion
+  rationale:
+    description: "The free-text rationale which users provide as justification/evidence\
+      \ for their cell annotations. \nResearchers are encouraged to use this field\
+      \ to cite relevant publications in-line using standard academic citations of\
+      \ the form `(Zheng et al., 2020)` This human-readable free-text MUST be encoded\
+      \ as a single string.\nAll references cited SHOULD be listed using DOIs under\
+      \ rationale_dois. There MUST be a 2000-character limit."
+    range: string
+    annotations:
+      owl: AnnotationAssertion
+  rationale_dois:
+    multivalued: true
+    range: string
+    annotations:
+      owl: AnnotationAssertion
+  marker_gene_evidence:
+    description: Gene names explicitly used as evidence, which MUST be in the matrix
+      of the AnnData/Seurat file
+    multivalued: true
+    range: string
+    annotations:
+      owl: AnnotationAssertion
+  negative_marker_gene_evidence:
+    description: Gene names explicitly used as evidence, which MUST be in the matrix
+      of the AnnData/Seurat file
+    multivalued: true
+    range: string
+    annotations:
+      owl: AnnotationAssertion
+  synonyms:
+    description: List of synonyms
+    multivalued: true
+    range: string
+    slot_uri: oboInOwl:hasExactSynonym
+    annotations:
+      owl: AnnotationAssertion
+  cell_set_accession:
+    description: An identifier that can be used to consistently refer to the set of
+      cells being annotated, even if the cell_label changes.
+    range: string
+    identifier: true
+  parent_cell_set_accession:
+    description: A list of accessions of cell sets that subsume this cell set. This
+      can be used to compose hierarchies of annotated cell sets, built from a fixed
+      set of clusters.
+#    range: string
+    range: Annotation
+    annotations:
+      owl: ObjectPropertyAssertion
+  transferred_annotations:
+    multivalued: true
+    range: AnnotationTransfer
+  transferred_cell_label:
+    description: Transferred cell label
+    range: string
+    annotations:
+      owl: AnnotationAssertion
+  source_taxonomy:
+    description: PURL of source taxonomy
+#    range: string
+#    range: NamedThing
+    annotations:
+      owl: AnnotationAssertion
+  source_node_accession:
+    description: accession of node that label was transferred from
+    range: string
+    annotations:
+      owl: AnnotationAssertion
+  comment:
+    description: Free text comment on annotation transfer
+    range: string
+    slot_uri: IAO:0000115
+    annotations:
+      owl: AnnotationProperty, AnnotationAssertion
+  matrix_file_id:
+    description: A resolvable ID for a cell by gene matrix file in the form namespace:accession,
+      e.g. CellXGene_dataset:8e10f1c4-8e98-41e5-b65f-8cd89a887122.  Please see https://github.com/cellannotation/cell-annotation-schema/registry/registry.json
+      for supported namespaces.
+    range: string
+    annotations:
+      owl: AnnotationAssertion
+  cellannotation_schema_version:
+    description: 'The schema version, the cell annotation open standard. Current version
+      MUST follow 0.1.0
+
+      This versioning MUST follow the format `''[MAJOR].[MINOR].[PATCH]''` as defined
+      by Semantic Versioning 2.0.0, https://semver.org/'
+    range: string
+    annotations:
+      owl: AnnotationAssertion
+  cellannotation_timestamp:
+    description: The timestamp of all cell annotations published (per dataset). This
+      MUST be a string in the format `'%yyyy-%mm-%dd %hh:%mm:%ss'`
+    range: string
+    annotations:
+      owl: AnnotationAssertion
+  cellannotation_version:
+    description: The version for all cell annotations published (per dataset). This
+      MUST be a string. The recommended versioning format is `'[MAJOR].[MINOR].[PATCH]'`
+      as defined by Semantic Versioning 2.0.0, https://semver.org/
+    range: string
+    annotations:
+      owl: AnnotationAssertion
+  cellannotation_url:
+    description: A persistent URL of all cell annotations published (per dataset).
+#    range: string
+#    range: NamedThing
+    annotations:
+      owl: AnnotationAssertion
+  author_list:
+    description: This field stores a list of users who are included in the project
+      as collaborators, regardless of their specific role. An example list; '['John
+      Smith', 'Cody Miller', 'Sarah Jones']'
+    range: string
+    annotations:
+      owl: AnnotationAssertion
+  author_name:
+    description: Primary author's name. This MUST be a string in the format `[FIRST
+      NAME] [LAST NAME]`
+    range: string
+    required: true
+    annotations:
+      owl: AnnotationAssertion
+  author_contact:
+    description: Primary author's contact. This MUST be a valid email address of the
+      author
+    range: string
+    annotations:
+      owl: AnnotationAssertion
+  orcid:
+    description: Primary author's orcid. This MUST be a valid ORCID for the author
+    range: string
+    annotations:
+      owl: AnnotationAssertion
+  labelsets:
+    multivalued: true
+    range: Labelset
+    required: true
+    slot_uri: CAS:hasLabelset
+    inlined: true
+    singular_name: labelsets
+    annotations:
+      owl: ObjectPropertyAssertion
+  annotations:
+    multivalued: true
+    range: Annotation
+    required: true
+    slot_uri: CAS:hasAnnotation
+    inlined: true
+    singular_name: annotation
+    annotations:
+      owl: ObjectPropertyAssertion
+classes:
+  Labelset:
+    slots:
+    - id
+    - name
+    - description
+    - annotation_method
+    - automated_annotation
+    - rank
+    class_uri: owl:Class
+#    annotations:
+#      owl: Class
+  AutomatedAnnotation:
+    description: 'A set of fields for recording the details of the automated annotation
+      algorithm used.
+
+      (Common ''automated annotation methods'' would include PopV, Azimuth, CellTypist,
+      scArches, etc.)'
+    slots:
+    - id
+    - algorithm_name
+    - algorithm_version
+    - algorithm_repo_url
+    - reference_location
+    class_uri: owl:Class
+  Annotation:
+    description: "A collection of fields recording a cell type/class/state annotation\
+      \ on some set os cells, supporting evidence and provenance. As this is intended\
+      \ as a general schema, compulsory fields are kept to a minimum. However, tools\
+      \ using this schema are encouarged to specify a larger set of compulsory fields\
+      \ for publication. \n\nNote: This schema deliberately allows for additional\
+      \ fields in order to support ad hoc user fields, new formal schema extensions\
+      \ and project/tool specific metadata."
+    slots:
+    - labelset
+    - cell_label
+    - cell_fullname
+    - cell_ontology_term_id
+    - cell_ontology_term
+    - cell_ids
+    - rationale
+    - rationale_dois
+    - marker_gene_evidence
+    - negative_marker_gene_evidence
+    - synonyms
+    - cell_set_accession
+    - parent_cell_set_accession
+    - transferred_annotations
+    class_uri: owl:Class
+  AnnotationTransfer:
+    slots:
+    - id
+    - transferred_cell_label
+    - source_taxonomy
+    - source_node_accession
+    - algorithm_name
+    - comment
+    class_uri: owl:Class
+  GeneralCellAnnotationOpenStandard:
+    slots:
+    - id
+    - matrix_file_id
+    - cellannotation_schema_version
+    - cellannotation_timestamp
+    - cellannotation_version
+    - cellannotation_url
+    - author_list
+    - author_name
+    - author_contact
+    - orcid
+    - labelsets
+    - annotations
+    class_uri: owl:Class
+

@@ -11,3 +11,9 @@ Convert [sample data](https://github.com/brain-bican/human-neocortex-middle-temp
 ```sh 
 linkml-data2owl -s schema/schemauto/BICAN-schema.yaml schema/schemauto/sample_data/AIT_MTG.json -o schema/schemauto/AIT_MTG.owl
 ```
+
+(Optional) Convert schema to data classes:
+
+```sh
+gen-python schema/schemauto/BICAN-schema.yaml > src/model/cas_schema.py
+```
