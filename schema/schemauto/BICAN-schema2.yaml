@@ -321,8 +321,8 @@ classes:
     - automated_annotation
     - rank
     class_uri: owl:Class
-#    annotations:
-#      owl: Class
+    annotations:
+      owl: Class
   AutomatedAnnotation:
     description: 'A set of fields for recording the details of the automated annotation
       algorithm used.
@@ -336,6 +336,8 @@ classes:
     - algorithm_repo_url
     - reference_location
     class_uri: owl:Class
+    annotations:
+      owl: Class
   Annotation:
     description: "A collection of fields recording a cell type/class/state annotation\
       \ on some set os cells, supporting evidence and provenance. As this is intended\
@@ -360,6 +362,8 @@ classes:
     - parent_cell_set_accession
     - transferred_annotations
     class_uri: owl:Class
+    annotations:
+      owl: Class
   AnnotationTransfer:
     slots:
     - id
@@ -369,6 +373,8 @@ classes:
     - algorithm_name
     - comment
     class_uri: owl:Class
+    annotations:
+      owl: Class
   GeneralCellAnnotationOpenStandard:
     slots:
     - id
@@ -384,4 +390,6 @@ classes:
     - labelsets
     - annotations
     class_uri: owl:Class
+    annotations:
+      owl: Class
 
