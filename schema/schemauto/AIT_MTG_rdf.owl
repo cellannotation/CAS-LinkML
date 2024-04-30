@@ -1,26 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rdf:RDF
    xml:base="https://purl.brain-bican.org/ontology/AIT_MTG/"
-   xmlns:CAS="https://purl.brain-bican.org/ontology/CAS/"
-   xmlns:ns1="http://purl.obolibrary.org/obo/"
+   xmlns:CAS="https://cellular-semantics.sanger.ac.uk/ontology/CAS/"
+   xmlns:obo="http://purl.obolibrary.org/obo/"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+   xmlns:skos="http://www.w3.org/2004/02/skos/core#"
 >
-  <rdf:Description rdf:about="https://purl.brain-bican.org/ontology/CAS/AIT_MTG">
-    <CAS:author_name>Trygve E Bakken</CAS:author_name>
-    <CAS:labelsets rdf:resource="CrossArea_cluster"/>
-    <CAS:labelsets rdf:resource="CrossArea_subclass"/>
-    <CAS:labelsets rdf:resource="Class"/>
-    <CAS:annotations rdf:resource="CrossArea_cluster#1b1d42bb38"/>
-    <CAS:matrix_file_id>CellXGene_dataset:8e10f1c4-8e98-41e5-b65f-8cd89a887122</CAS:matrix_file_id>
-    <CAS:cellannotation_schema_version>4.0.0</CAS:cellannotation_schema_version>
-    <rdf:type rdf:resource="https://purl.brain-bican.org/ontology/CAS/GeneralCellAnnotationOpenStandard"/>
+  <rdf:Description rdf:about="CrossArea_subclass">
+    <rdfs:label>CrossArea_subclass</rdfs:label>
+    <obo:IAO_0000115></obo:IAO_0000115>
+    <CAS:rank rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</CAS:rank>
+    <rdf:type rdf:resource="https://cellular-semantics.sanger.ac.uk/ontology/CAS/Labelset"/>
   </rdf:Description>
   <rdf:Description rdf:about="CrossArea_cluster#1b1d42bb38">
-    <CAS:labelset>CrossArea_cluster</CAS:labelset>
-    <CAS:cell_label>VLMC_1</CAS:cell_label>
-    <CAS:cell_fullname>VLMC_1</CAS:cell_fullname>
-    <CAS:cell_ontology_term_id rdf:resource="http://purl.obolibrary.org/obo/CL_0002144"/>
+    <CAS:has_labelset>CrossArea_cluster</CAS:has_labelset>
+    <rdfs:label>VLMC_1</rdfs:label>
+    <skos:preflabel>VLMC_1</skos:preflabel>
+    <obo:RO_0002473 rdf:resource="http://purl.obolibrary.org/obo/CL_0002144"/>
     <CAS:cell_ontology_term>capillary endothelial cell</CAS:cell_ontology_term>
     <CAS:cell_ids>TTCACGCGTAGCTTAC-33L8TX_191126_01_H01</CAS:cell_ids>
     <CAS:cell_ids>ATGATCGTCCATAGAC-34L8TX_191126_02_G02</CAS:cell_ids>
@@ -39,25 +36,29 @@
     <CAS:cell_ids>TCACATTAGAAAGCGA-19L8TX_200107_01_A09</CAS:cell_ids>
     <CAS:cell_ids>TGAGCATAGTTTCTTC-19L8TX_200107_01_A09</CAS:cell_ids>
     <CAS:cell_ids>AGACACTGTGCCTAAT-19L8TX_200107_01_A09</CAS:cell_ids>
-    <CAS:parent_cell_set_accession rdf:resource="CrossArea_subclass#f6b98fd9f4"/>
-    <rdf:type rdf:resource="https://purl.brain-bican.org/ontology/CAS/Annotation"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="CrossArea_subclass">
-    <rdfs:label>CrossArea_subclass</rdfs:label>
-    <ns1:IAO_0000115></ns1:IAO_0000115>
-    <CAS:rank rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</CAS:rank>
-    <rdf:type rdf:resource="https://purl.brain-bican.org/ontology/CAS/Labelset"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="Class">
-    <rdfs:label>Class</rdfs:label>
-    <ns1:IAO_0000115></ns1:IAO_0000115>
-    <CAS:rank rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</CAS:rank>
-    <rdf:type rdf:resource="https://purl.brain-bican.org/ontology/CAS/Labelset"/>
+    <obo:RO_0015003 rdf:resource="CrossArea_subclass#f6b98fd9f4"/>
+    <rdf:type rdf:resource="http://purl.obolibrary.org/obo/PCL_0010001"/>
   </rdf:Description>
   <rdf:Description rdf:about="CrossArea_cluster">
     <rdfs:label>CrossArea_cluster</rdfs:label>
-    <ns1:IAO_0000115></ns1:IAO_0000115>
+    <obo:IAO_0000115></obo:IAO_0000115>
     <CAS:rank rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">0</CAS:rank>
-    <rdf:type rdf:resource="https://purl.brain-bican.org/ontology/CAS/Labelset"/>
+    <rdf:type rdf:resource="https://cellular-semantics.sanger.ac.uk/ontology/CAS/Labelset"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="Class">
+    <rdfs:label>Class</rdfs:label>
+    <obo:IAO_0000115></obo:IAO_0000115>
+    <CAS:rank rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</CAS:rank>
+    <rdf:type rdf:resource="https://cellular-semantics.sanger.ac.uk/ontology/CAS/Labelset"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="https://cellular-semantics.sanger.ac.uk/ontology/CAS/AIT_MTG">
+    <CAS:author_name>Trygve E Bakken</CAS:author_name>
+    <CAS:labelsets rdf:resource="CrossArea_cluster"/>
+    <CAS:labelsets rdf:resource="CrossArea_subclass"/>
+    <CAS:labelsets rdf:resource="Class"/>
+    <CAS:annotations rdf:resource="CrossArea_cluster#1b1d42bb38"/>
+    <CAS:matrix_file_id>CellXGene_dataset:8e10f1c4-8e98-41e5-b65f-8cd89a887122</CAS:matrix_file_id>
+    <CAS:cellannotation_schema_version>4.0.0</CAS:cellannotation_schema_version>
+    <rdf:type rdf:resource="https://cellular-semantics.sanger.ac.uk/ontology/CAS/GeneralCellAnnotationOpenStandard"/>
   </rdf:Description>
 </rdf:RDF>

@@ -62,14 +62,18 @@ def run_rdf_dumper(schema_path, data_path, output_path):
         py_inst,
         schemaview=schemaview,
         prefix_map={
-            "CAS": "https://purl.brain-bican.org/ontology/CAS/",
-            "General_Cell_Annotation_Open_Standard": "https://purl.brain-bican.org/ontology/CAS/",
+            "CAS": "https://cellular-semantics.sanger.ac.uk/ontology/CAS/",
+            "General_Cell_Annotation_Open_Standard": "https://cellular-semantics.sanger.ac.uk/ontology/CAS/",
             "_base": "https://purl.brain-bican.org/ontology/AIT_MTG/",
             "MTG": "https://purl.brain-bican.org/ontology/AIT_MTG/",
             "CrossArea_cluster": "https://purl.brain-bican.org/ontology/AIT_MTG/CrossArea_cluster#",
             "CrossArea_subclass": "https://purl.brain-bican.org/ontology/AIT_MTG/CrossArea_subclass#",
             "Class": "https://purl.brain-bican.org/ontology/AIT_MTG/Class#",
+            "obo": "http://purl.obolibrary.org/obo/",
             "CL": "http://purl.obolibrary.org/obo/CL_",
+            "PCL": "http://purl.obolibrary.org/obo/PCL_",
+            "RO": "http://purl.obolibrary.org/obo/RO_",
+            "skos": "http://www.w3.org/2004/02/skos/core#"
         },
     )
     g.serialize(format="xml", destination=output_path)
@@ -93,11 +97,13 @@ def run_data2owl(schema_path, data_path, output_path):
         stream.write(str(doc))
 
 
-def convert_cas_schema_to_linkml():
+def convert_cas_schema_to_linkml(output_path=None):
     ie = JsonSchemaImportEngine()
     schema = ie.load(CAS_SCHEMA_IN, name="cell-annotation-schema", format='json', root_class_name=None)
     model_path = os.path.join(MODEL_DIR, 'BICAN-schema.yaml')
+
     write_schema(schema, model_path)
+    return schema
 
 
 def convert_linkml_to_linkml_owl():
@@ -105,7 +111,7 @@ def convert_linkml_to_linkml_owl():
 
 
 if __name__ == '__main__':
-    # convert_cas_schema_to_linkml()
+    # schema = convert_cas_schema_to_linkml()
     # run_data2owl(SCHEMA_IN, DATA_IN, OWL_OUT)
     if os.path.exists(OWL_OUT2):
         os.remove(OWL_OUT2)
