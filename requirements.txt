@@ -3,3 +3,4 @@ oaklib
 schema-automator
 defusedxml
 linkml-owl
+rdflib

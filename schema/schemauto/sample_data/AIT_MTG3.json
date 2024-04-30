@@ -1,0 +1,56 @@
+{
+    "id": "CAS:AIT_MTG",
+    "cellannotation_schema_version": "4.0.0",
+    "author_name": "Trygve E Bakken",
+    "matrix_file_id": "CellXGene_dataset:8e10f1c4-8e98-41e5-b65f-8cd89a887122",
+    "annotations": [
+      {
+        "labelset": "CrossArea_cluster",
+        "cell_label": "VLMC_1",
+        "cell_fullname": "VLMC_1",
+        "cell_set_accession": "CrossArea_cluster:1b1d42bb38",
+        "cell_ids": [
+          "TTCACGCGTAGCTTAC-33L8TX_191126_01_H01",
+          "ATGATCGTCCATAGAC-34L8TX_191126_02_G02",
+          "GTCAAGTGTCTCAGGC-34L8TX_191126_02_G02",
+          "GTTCGCTGTTGCATTG-34L8TX_191126_02_G02",
+          "GAACGTTCAGACCCGT-35L8TX_191126_02_H02",
+          "TTCCACGAGTCTGGTT-35L8TX_191126_02_H02",
+          "CTAGACAAGTTCATCG-19L8TX_200107_01_A09",
+          "ACTATTCAGTCTGGAG-4LKTX_191204_01_D01",
+          "AACGAAAGTTCTTAGG-19L8TX_200107_01_A09",
+          "AAGCGTTCATAATCGC-19L8TX_200107_01_A09",
+          "ACCTGAAGTGTCCCTT-19L8TX_200107_01_A09",
+          "CAACAACAGAACGCGT-19L8TX_200107_01_A09",
+          "CATTCCGCACACCAGC-19L8TX_200107_01_A09",
+          "CCACTTGGTGCAATGG-19L8TX_200107_01_A09",
+          "TCACATTAGAAAGCGA-19L8TX_200107_01_A09",
+          "TGAGCATAGTTTCTTC-19L8TX_200107_01_A09",
+          "AGACACTGTGCCTAAT-19L8TX_200107_01_A09"
+        ],
+        "parent_cell_set_accession": "CrossArea_subclass:f6b98fd9f4",
+        "cell_ontology_term_id": "CL:0002144",
+        "cell_ontology_term": "capillary endothelial cell"
+      }
+    ],
+    "labelsets": [
+      {
+        "id": "MTG:CrossArea_cluster",
+        "name": "CrossArea_cluster",
+        "description": "",
+        "rank": "0"
+      },
+      {
+        "id": "MTG:CrossArea_subclass",
+        "name": "CrossArea_subclass",
+        "description": "",
+        "rank": "1"
+      },
+      {
+        "id": "MTG:Class",
+        "name": "Class",
+        "description": "",
+        "rank": "2"
+      }
+    ]
+  }
