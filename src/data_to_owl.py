@@ -16,6 +16,12 @@ from linkml_runtime.dumpers import rdflib_dumper
 from linkml_runtime.linkml_model import SchemaDefinition
 from linkml import generators as generators
 from linkml_runtime.utils.compile_python import compile_python
+from linkml.validator import Validator
+from linkml.utils import validation
+from linkml.utils.datautils import (
+    get_loader,
+    _get_format
+    )
 
 SCHEMA_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../schema')
 MODEL_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../schema/schemauto')
@@ -37,27 +43,45 @@ logger = logging.getLogger()
 logger.setLevel(level=logging.DEBUG)
 
 
-def run_rdf_dumper(schema_path, data_path, output_path):
+def run_rdf_dumper(schema_path, data_path, output_path, validate=True):
     # gen, output, _ = _generate_framework_output(schema, PYTHON_DATACLASSES)
     target_class = "GeneralCellAnnotationOpenStandard"
 
     with open(data_path) as f:
         instance = json.load(f)
 
+    if validate:
+        validator = Validator(schema_path)
+        report = validator.validate(instance)
+        print(report)
+        print("DONE VALIDATING")
+
     gen = generators.PythonGenerator(schema_path)
     # gen = generators.PythonGenerator(schema=SchemaDefinition(schema))
     output = gen.serialize()
 
-    mod = compile_python(output)
-    py_cls = getattr(mod, target_class)
+    python_module = compile_python(output)
+    py_target_class = getattr(python_module, target_class)
+
     try:
-        py_inst = py_cls(**instance)
+        py_inst = py_target_class(**instance)
     except Exception as e:
-        logging.info(f"Could not instantiate {py_cls} from {instance}; exception: {e}")
+        print(f"Could not instantiate {py_target_class} from the data; exception: {e}")
         return None
 
     # schemaview = SchemaView(SchemaDefinition(**schema))
     schemaview = SchemaView(schema_path)
+
+    # if validate:
+    #     input_format = _get_format(data_path)
+    #     loader = get_loader(input_format)
+    #     # py_target_class = python_module.__dict__[target_class]
+    #     inargs = {"schemaview": schemaview,
+    #               "fmt": input_format,
+    #               "schema": schema_path}
+    #     obj = loader.load(source=data_path, target_class=py_target_class, **inargs)
+    #     validation.validate_object(obj, schema_path)
+
     g = rdflib_dumper.as_rdf_graph(
         py_inst,
         schemaview=schemaview,
@@ -115,5 +139,5 @@ if __name__ == '__main__':
     # run_data2owl(SCHEMA_IN, DATA_IN, OWL_OUT)
     if os.path.exists(OWL_OUT2):
         os.remove(OWL_OUT2)
-    run_rdf_dumper(SCHEMA_IN3, DATA_IN3, OWL_OUT2)
+    run_rdf_dumper(SCHEMA_IN3, DATA_IN3, OWL_OUT2, validate=True)
     print("Done")

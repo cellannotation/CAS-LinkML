@@ -13,6 +13,16 @@
     <CAS:rank rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</CAS:rank>
     <rdf:type rdf:resource="https://cellular-semantics.sanger.ac.uk/ontology/CAS/Labelset"/>
   </rdf:Description>
+  <rdf:Description rdf:about="https://cellular-semantics.sanger.ac.uk/ontology/CAS/AIT_MTG">
+    <CAS:author_name>Trygve E Bakken</CAS:author_name>
+    <CAS:labelsets rdf:resource="CrossArea_cluster"/>
+    <CAS:labelsets rdf:resource="CrossArea_subclass"/>
+    <CAS:labelsets rdf:resource="Class"/>
+    <CAS:annotations rdf:resource="CrossArea_cluster#1b1d42bb38"/>
+    <CAS:matrix_file_id>CellXGene_dataset:8e10f1c4-8e98-41e5-b65f-8cd89a887122</CAS:matrix_file_id>
+    <CAS:cellannotation_schema_version>4.0.0</CAS:cellannotation_schema_version>
+    <rdf:type rdf:resource="https://cellular-semantics.sanger.ac.uk/ontology/CAS/GeneralCellAnnotationOpenStandard"/>
+  </rdf:Description>
   <rdf:Description rdf:about="CrossArea_cluster#1b1d42bb38">
     <CAS:has_labelset>CrossArea_cluster</CAS:has_labelset>
     <rdfs:label>VLMC_1</rdfs:label>
@@ -50,15 +60,5 @@
     <obo:IAO_0000115></obo:IAO_0000115>
     <CAS:rank rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</CAS:rank>
     <rdf:type rdf:resource="https://cellular-semantics.sanger.ac.uk/ontology/CAS/Labelset"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="https://cellular-semantics.sanger.ac.uk/ontology/CAS/AIT_MTG">
-    <CAS:author_name>Trygve E Bakken</CAS:author_name>
-    <CAS:labelsets rdf:resource="CrossArea_cluster"/>
-    <CAS:labelsets rdf:resource="CrossArea_subclass"/>
-    <CAS:labelsets rdf:resource="Class"/>
-    <CAS:annotations rdf:resource="CrossArea_cluster#1b1d42bb38"/>
-    <CAS:matrix_file_id>CellXGene_dataset:8e10f1c4-8e98-41e5-b65f-8cd89a887122</CAS:matrix_file_id>
-    <CAS:cellannotation_schema_version>4.0.0</CAS:cellannotation_schema_version>
-    <rdf:type rdf:resource="https://cellular-semantics.sanger.ac.uk/ontology/CAS/GeneralCellAnnotationOpenStandard"/>
   </rdf:Description>
 </rdf:RDF>
