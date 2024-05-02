@@ -31,17 +31,6 @@ enums:
       include_self: true
       relationship_types:
         - rdfs:subClassOf
-    permissible_values:
-      CL:0019019:
-        text: CL:0019019
-        description: A smooth muscle cell that is part of the tracheobronchial tree.
-        meaning: CL:0019019
-        title: tracheobronchial smooth muscle cell
-      CL:0002144:
-        text: CL:0002144
-        description: An endothelial cell found in capillaries.
-        meaning: CL:0002144
-        title: capillary endothelial cell
 
 slots:
   id:
