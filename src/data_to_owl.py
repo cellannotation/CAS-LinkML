@@ -1,12 +1,15 @@
 import json
 import os
 import logging
-from typing import List
+import tempfile
+from typing import List, Optional, Union
+from pathlib import Path
 
 from ruamel.yaml import YAML
 
 from linkml.generators.pythongen import PythonGenerator
 from linkml_runtime import SchemaView
+from linkml_runtime.utils.schemaview import load_schema_wrap
 
 from linkml_owl.util.loader_wrapper import load_structured_file
 from linkml_owl.dumpers.owl_dumper import OWLDumper
@@ -25,15 +28,16 @@ from linkml.utils import validation
 from linkml.utils.datautils import (
     get_loader,
     _get_format
-    )
+)
 
+from linkml_runtime.utils.schema_as_dict import schema_as_dict
 from linkml_runtime.loaders import yaml_loader
+from linkml_runtime.dumpers import json_dumper
 from oaklib.utilities.subsets.value_set_expander import ValueSetExpander, ValueSetConfiguration
 
 SCHEMA_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../schema')
 MODEL_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../schema/schemauto')
 INPUT_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../schema/schemauto/sample_data')
-
 
 CAS_SCHEMA_IN = os.path.join(SCHEMA_DIR, 'BICAN_schema.json')
 
@@ -50,26 +54,32 @@ OWL_OUT2 = os.path.join(MODEL_DIR, 'AIT_MTG_rdf.owl')
 
 CAS_NAMESPACE = "https://cellular-semantics.sanger.ac.uk/ontology/CAS"
 
-
 logger = logging.getLogger()
 logger.setLevel(level=logging.DEBUG)
 
 
-def run_rdf_dumper(schema_path, data_path, output_path, validate=True):
+def run_rdf_dumper(schema: Union[str, Path, dict], data_path, output_path, validate=True):
     # gen, output, _ = _generate_framework_output(schema, PYTHON_DATACLASSES)
+    schema_def: SchemaDefinition = yaml_loader.load(schema, target_class=SchemaDefinition)
+    # if isinstance(schema, dict):
+    #     schema_def: SchemaDefinition = yaml_loader.load(schema, target_class=SchemaDefinition)
+    # else:
+    #     schema_def: SchemaDefinition = yaml_loader.load(schema, SchemaDefinition)
+
     target_class = "GeneralCellAnnotationOpenStandard"
 
     with open(data_path) as f:
         instance = json.load(f)
 
     if validate:
-        validator = Validator(schema_path)
+        validator = Validator(schema_def)
         report = validator.validate(instance)
         print(report)
         print("DONE VALIDATING")
 
-    gen = generators.PythonGenerator(schema_path)
-    # gen = generators.PythonGenerator(schema=SchemaDefinition(schema))
+    # gen = generators.PythonGenerator(schema_path)
+    # gen = generators.PythonGenerator(schema=schema_def)
+    gen = generators.PythonGenerator(schema_def)
     output = gen.serialize()
 
     python_module = compile_python(output)
@@ -82,7 +92,7 @@ def run_rdf_dumper(schema_path, data_path, output_path, validate=True):
         return None
 
     # schemaview = SchemaView(SchemaDefinition(**schema))
-    schemaview = SchemaView(schema_path)
+    schemaview = SchemaView(schema_def)
 
     # if validate:
     #     input_format = _get_format(data_path)
@@ -115,76 +125,122 @@ def run_rdf_dumper(schema_path, data_path, output_path, validate=True):
     g.serialize(format="xml", destination=output_path)
 
 
-def run_data2owl(schema_path, data_path, output_path):
-    sv = SchemaView(schema_path)
-    python_module = PythonGenerator(schema_path).compile_module()
-    data = load_structured_file(data_path, schemaview=sv, python_module=python_module)
-    dumper = OWLDumper()
-    dumper.schemaview = sv
+def run_data2owl(schema: Union[str, Path, dict], data_path, output_path):
+    temp_file = None
+    try:
+        if isinstance(schema, dict):
+            temp_file = tempfile.SpooledTemporaryFile(suffix='.yaml')
+            schema_path = temp_file.name
+            yaml = YAML()
+            yaml.dump(schema, stream=temp_file)
+            # loader = yaml_loader.YAMLLoader()
+            # schema = loader.load(schema, target_class=SchemaDefinition)
+            # schema = load_schema_wrap(schema, target_class=SchemaDefinition)
+        else:
+            schema_path = schema
+        sv = SchemaView(schema_path)
+        python_module = PythonGenerator(schema_path).compile_module()
+        data = load_structured_file(data_path, schemaview=sv, python_module=python_module)
+        dumper = OWLDumper()
+        dumper.schemaview = sv
 
-    # container = py_mod.Container(entities=check.records)
-    # dumper.object_index = ObjectIndex(container, schemaview=sv)
-    # dumper.autofill = True
+        # container = py_mod.Container(entities=check.records)
+        # dumper.object_index = ObjectIndex(container, schemaview=sv)
+        # dumper.autofill = True
 
-    doc = dumper.to_ontology_document(data, schema=sv.schema)
-    for a in doc.ontology.axioms:
-        print(f'AXIOM={a}')
-    with open(output_path, 'w') as stream:
-        stream.write(str(doc))
+        doc = dumper.to_ontology_document(data, schema=sv.schema)
+        for a in doc.ontology.axioms:
+            print(f'AXIOM={a}')
+        with open(output_path, 'w') as stream:
+            stream.write(str(doc))
+    finally:
+        if temp_file:
+            temp_file.close()
 
 
 def convert_cas_schema_to_linkml(cas_schema, output_path=None):
+    """
+    Converts the CAS schema to LinkML schema.
+    Parameters:
+        cas_schema: str
+            Path to the CAS schema file
+        output_path: str
+            (Optional) Path to the output schema file
+    Returns:
+        LinkML SchemaDefinition object
+    """
     ie = JsonSchemaImportEngine()
     schema = ie.load(cas_schema, name="cell-annotation-schema", format='json', root_class_name=None)
     if output_path:
         write_schema(schema, output_path)
+
     return schema
 
 
-def expand_schema(config: str, schema: str, value_set_names: List[str], output: str):
+def expand_schema(config: Optional[str], yaml_obj: dict, value_set_names: List[str], output_path: Optional[str] = None):
     """
-    Dynamic Value set expander.
+    Dynamic Value set expander. Expands the yaml_obj schema inplace with the given value set names.
     Source code from https://github.com/INCATools/ontology-access-kit/blob/main/src/oaklib/utilities/subsets/value_set_expander.py
 
     Parameters:
         config: str
             Configuration file path
-        schema: str
-            Schema file path
+        yaml_obj: dict
+            Yaml schema object
         value_set_names: List[str]
             Value set names to expand
-        output: str
-            Output expanded schema file path
+        output_path: str
+            (Optional) Output expanded schema file path
     """
     expander = ValueSetExpander()
     if config:
         expander.configuration = yaml_loader.load(config, target_class=ValueSetConfiguration)
-    expander.expand_in_place(
-        schema_path=schema, value_set_names=value_set_names, output_path=output
-    )
+    # expander.expand_in_place(
+    #     schema_path=schema, value_set_names=value_set_names, output_path=output
+    # )
+    yaml = YAML()
+    schema = yaml_loader.load(yaml_obj, target_class=SchemaDefinition)
+    if value_set_names is None:
+        value_set_names = list(schema.enums.keys())
+    for value_set_name in value_set_names:
+        if value_set_name not in schema.enums:
+            raise ValueError(f"Unknown value set: {value_set_name}")
+        value_set = schema.enums[value_set_name]
+        pvs = list(expander.expand_value_set(value_set, schema=schema))
+        yaml_obj["enums"][value_set_name]["permissible_values"] = {
+            str(pv.text): json_dumper.to_dict(pv) for pv in pvs
+        }
+    if output_path:
+        with open(output_path, "w", encoding="UTF-8") as file:
+            yaml.dump(yaml_obj, stream=file)
+    return yaml_obj
 
 
-def decorate_linkml_schema(schema_path, ontology_namespace, ontology_iri, labelsets=None, output_path=None):
+def decorate_linkml_schema(schema_obj: Union[dict, SchemaDefinition], ontology_namespace, ontology_iri, labelsets=None, output_path=None):
     """
     Adds additional properties to the LinkML schema that are required for OWL conversion.
     Parameters:
-        schema_path: str
-            Path to the LinkML schema file
+        schema_obj: dict or SchemaDefinition
+            Link ML schema object
         ontology_namespace: str
             Ontology namespace (e.g. MTG)
         ontology_iri: str
             Ontology IRI (e.g. https://purl.brain-bican.org/ontology/AIT_MTG/)
+        labelsets: List[str]
+            Labelsets used in the taxonomy.
         output_path: str
             (Optional) Path to the output schema file
     Returns:
         Decorated schema
     """
-    schema_obj = read_yaml(schema_path)
+    if isinstance(schema_obj, SchemaDefinition):
+        schema_obj = schema_as_dict(schema_obj)
 
     schema_obj["id"] = CAS_NAMESPACE
 
     ontology_namespace = ontology_namespace.upper()
     prefixes = {
+        "linkml": "https://w3id.org/linkml/",
         "CAS": CAS_NAMESPACE + "/",
         "General_Cell_Annotation_Open_Standard": CAS_NAMESPACE + "/",
         "_base": ontology_iri,
@@ -202,17 +258,17 @@ def decorate_linkml_schema(schema_path, ontology_namespace, ontology_iri, labels
     schema_obj["default_range"] = "string"
     schema_obj["default_curi_maps"] = ["semweb_context", "obo_context"]
     schema_obj["enums"]["CellTypeEnum"] = {
-              "reachable_from": {
-                  "source_ontology": "obo:cl",
-                  "source_nodes": ["CL:0000000"],
-                  "include_self": True,
-                  "relationship_types": ["rdfs:subClassOf"]
-              }
-          }
-    schema_obj["slots"]["id"] = {
-            "identifier": True,
-            "range": "uriorcurie"
+        "reachable_from": {
+            "source_ontology": "obo:cl",
+            "source_nodes": ["CL:0000000"],
+            "include_self": True,
+            "relationship_types": ["rdfs:subClassOf"]
         }
+    }
+    schema_obj["slots"]["id"] = {
+        "identifier": True,
+        "range": "uriorcurie"
+    }
     schema_obj["slots"]["name"]["slot_uri"] = "rdfs:label"
     schema_obj["slots"]["description"]["slot_uri"] = "IAO:0000115"
     schema_obj["slots"]["cell_label"]["slot_uri"] = "rdfs:label"
@@ -227,12 +283,15 @@ def decorate_linkml_schema(schema_path, ontology_namespace, ontology_iri, labels
     schema_obj["slots"]["labelset"]["slot_uri"] = "CAS:has_labelset"
     schema_obj["slots"]["labelsets"]["inlined"] = True
     schema_obj["slots"]["annotations"]["inlined"] = True
-    list(schema_obj["classes"]["Labelset"]["slots"]).append("id")
-    list(schema_obj["classes"]["GeneralCellAnnotationOpenStandard"]["slots"]).append("id")
+
+    schema_obj["classes"]["Labelset"]["slots"] = list(schema_obj["classes"]["Labelset"]["slots"]) + ["id"]
+    schema_obj["classes"]["GeneralCellAnnotationOpenStandard"]["slots"] = list(schema_obj["classes"]["GeneralCellAnnotationOpenStandard"]["slots"]) + ["id"]
     schema_obj["classes"]["Annotation"]["class_uri"] = "PCL:0010001"
 
     if output_path:
         write_schema(schema_obj, output_path)
+
+    return schema_obj
 
 
 def convert_linkml_to_linkml_owl():
@@ -254,15 +313,16 @@ def read_yaml(file_path: str) -> dict:
 
 
 if __name__ == '__main__':
-    # schema = convert_cas_schema_to_linkml(CAS_SCHEMA_IN, BASE_LINKML_SCHEMA)
-    decorate_linkml_schema(BASE_LINKML_SCHEMA,
-                           ontology_namespace="MTG",
-                           ontology_iri="https://purl.brain-bican.org/ontology/AIT_MTG/",
-                           labelsets=["CrossArea_cluster", "CrossArea_subclass", "Class"],
-                           output_path=os.path.join(MODEL_DIR, 'BICAN-schema-test.yaml'))
-    # expand_schema(None, SCHEMA_IN3, ["CellTypeEnum"], SCHEMA_EXPANDED)
-    # run_data2owl(SCHEMA_IN, DATA_IN, OWL_OUT)
-    # if os.path.exists(OWL_OUT2):
-    #     os.remove(OWL_OUT2)
-    # run_rdf_dumper(SCHEMA_IN3, DATA_IN3, OWL_OUT2, validate=True)
+    linkml_schema = convert_cas_schema_to_linkml(CAS_SCHEMA_IN)
+    decorated_schema = decorate_linkml_schema(linkml_schema,
+                                              ontology_namespace="MTG",
+                                              ontology_iri="https://purl.brain-bican.org/ontology/AIT_MTG/",
+                                              labelsets=["CrossArea_cluster", "CrossArea_subclass", "Class"])
+    expanded_schema = expand_schema(config=None,
+                                    yaml_obj=decorated_schema,
+                                    value_set_names=["CellTypeEnum"])
+    # run_data2owl(expanded_schema, DATA_IN, OWL_OUT)
+    if os.path.exists(OWL_OUT2):
+        os.remove(OWL_OUT2)
+    run_rdf_dumper(expanded_schema, DATA_IN3, OWL_OUT2, validate=True)
     print("Done")
